@@ -32,7 +32,7 @@ public:
 	void LogEvent(LPCTSTR pszFormat, ...);
     void SetServiceStatus(DWORD dwState);
     void SetupAsLocalServer();
-	void SetTime(int hour, int min, int sec = 0);
+	void SetTime(time_t start, time_t end);
 
 //Implementation
 private:
@@ -46,9 +46,8 @@ public:
     SERVICE_STATUS m_status;
 	DWORD dwThreadID;
 	BOOL m_bService;
-	int hour;
-	int min;
-	int sec;
+	time_t shutdowntime_start;
+	time_t shutdowntime_end;
 };
 
 extern CServiceModule _Module;

@@ -66,6 +66,7 @@ CCallMeSleepDlg::CCallMeSleepDlg(CWnd* pParent /*=NULL*/)
 	//{{AFX_DATA_INIT(CCallMeSleepDlg)
 	//m_tmShutdownTime = COleDateTime::GetCurrentTime();
 	m_tmShutdownTime.ParseDateTime(_T("22:30:00"));
+	m_tmShutdownTimeEnd.ParseDateTime(_T("06:00:00"));
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -76,6 +77,7 @@ void CCallMeSleepDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CCallMeSleepDlg)
 	DDX_DateTimeCtrl(pDX, IDC_TIME_SHUTDOWN, m_tmShutdownTime);
+	DDX_DateTimeCtrl(pDX, IDC_TIME_SHUTDOWN_END, m_tmShutdownTimeEnd);
 	//}}AFX_DATA_MAP
 }
 
@@ -246,8 +248,9 @@ void CCallMeSleepDlg::OnButtonInstall()
 
 	UpdateData();
 	_sntprintf(command, sizeof(command) / sizeof(TCHAR), _T("sc.exe create CallMeSleep type= own start= auto error= normal "
-		"binPath= \"%s %02d:%02d:%02d\" DisplayName= \"Call me Sleep when late at the night.\""), 
-	szModulePathName, m_tmShutdownTime.GetHour(), m_tmShutdownTime.GetMinute(), m_tmShutdownTime.GetSecond());
+		"binPath= \"%s %02d:%02d:%02d-%02d:%02d:%02d\" DisplayName= \"Call me Sleep when late mainly at night.\""), 
+	szModulePathName, m_tmShutdownTime.GetHour(), m_tmShutdownTime.GetMinute(), m_tmShutdownTime.GetSecond(),
+	m_tmShutdownTimeEnd.GetHour(), m_tmShutdownTimeEnd.GetMinute(), m_tmShutdownTimeEnd.GetSecond());
 	TRACE(command);
 	//OnButtonUninstall();
 	dwResult = ExecuteCMD(command);

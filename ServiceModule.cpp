@@ -11,9 +11,6 @@
 #include <stdio.h>
 #include "ServiceModule.h"
 
-extern "C" int CallMeSleep(int hour, int min, int sec);
-extern "C" time_t getTime(int hour, int min, int sec);
-
 CServiceModule _Module;
 
 BEGIN_OBJECT_MAP(ObjectMap)
@@ -261,11 +258,10 @@ void CServiceModule::SetServiceStatus(DWORD dwState)
     ::SetServiceStatus(m_hServiceStatus, &m_status);
 }
 
-void CServiceModule::SetTime(int hour, int min, int sec)
+void CServiceModule::SetTime(time_t start, time_t end)
 {
-	this->hour = hour;
-	this->min  = min;
-	this->sec  = sec;
+	shutdowntime_start = start;
+	shutdowntime_end = end;
 }
 
 void CServiceModule::Run()
@@ -279,18 +275,16 @@ void CServiceModule::Run()
 	//DispatchMessage(&msg);
 
 	time_t now = 0;
-	time_t shutdown_time = getTime(hour, min, sec);
 	while (m_status.dwCurrentState == SERVICE_RUNNING) {
 		now = time(NULL);
-		if(now >= shutdown_time) {
+
+		if(now >= shutdowntime_start && now <= shutdowntime_end) {
 			system("shutdown /s");
 			return ;
 		}
 
 		Sleep(500);
 	}
-	
-//	CallMeSleep(hour, min, sec);
 }
 
 /////////////////////////////////////////////////////////////////////////////

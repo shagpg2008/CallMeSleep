@@ -10,6 +10,7 @@
 #define IDC_BUTTON_INSTALL              1000
 #define IDC_BUTTON_UNINSTALL            1001
 #define IDC_TIME_SHUTDOWN               1002
+#define IDC_TIME_SHUTDOWN_END           1003
 
 // Next default values for new objects
 // 

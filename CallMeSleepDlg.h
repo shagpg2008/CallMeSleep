@@ -21,6 +21,7 @@ public:
 	//{{AFX_DATA(CCallMeSleepDlg)
 	enum { IDD = IDD_CALLMESLEEP_DIALOG };
 	COleDateTime	m_tmShutdownTime;
+	COleDateTime	m_tmShutdownTimeEnd;
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides

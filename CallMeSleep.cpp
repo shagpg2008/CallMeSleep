@@ -12,6 +12,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+
+extern "C" time_t getTime(int hour, int min, int sec);
+
 /////////////////////////////////////////////////////////////////////////////
 // CCallMeSleepApp
 
@@ -56,14 +59,29 @@ BOOL CCallMeSleepApp::InitInstance()
 	Enable3dControlsStatic();	// Call this when linking to MFC statically
 #endif
 
+//	m_lpCmdLine = "22:00:00-06:00:00"; //for test
+
 	if(*m_lpCmdLine != 0) {
-		int hour = 0;
-		int min = 0;
-		int sec = 0;
-		_stscanf(m_lpCmdLine, _T("%d:%d:%d"), &hour, &min, &sec);
-		_Module.Init(m_hInstance, _T("CallMeSleep"), NULL);
+		int hour = 0, min = 0, sec = 0;
+		int hour2 = 0, min2 = 0, sec2 = 0;
+		_stscanf(m_lpCmdLine, _T("%d:%d:%d-%d:%d:%d"), &hour, &min, &sec, &hour2, &min2, &sec2);
+		time_t start = getTime(hour, min, sec), end = getTime(hour2, min2, sec2);
+		time_t now = time(NULL);
+		struct tm *tm_now = localtime(&now);
+
+		if(hour > hour2 || (hour == hour2 && min > min2) || (hour == hour2 && min == min2 && sec > sec2))
+		{
+			if(tm_now->tm_hour <= hour2) {
+				start -= 24*60*60;
+			} else {
+				end += 24*60*60;
+			}
+		}
+
+		_Module.SetTime(start, end);
+
+		_Module.Init(m_hInstance, _T("CallMeSleep"), NULL); 
 		_Module.m_bService = TRUE;
-		_Module.SetTime(hour, min, sec);
 		_Module.Start();
 	} else {
 		CCallMeSleepDlg dlg;
